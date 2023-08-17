@@ -4,7 +4,7 @@
     "title": "Vocode Hosted API",
     "description": "\n        Vocode's Hosted API helps you automate phone calls in minutes. 🚀\n\n        ## Numbers\n\n        You can buy phone lines and place agents on them.\n\n        ## Calls\n\n        You can start, end, and get information about calls.\n        ",
     "termsOfService": "http://example.com/terms/",
-    "contact": { "name": "Kian", "email": "kian@vocode.dev" },
+    "contact": { "name": "Support", "email": "support@vocode.dev" },
     "version": "1.0.0"
   },
   "servers": [
@@ -23,16 +23,34 @@
         "tags": ["numbers"],
         "summary": "List Numbers",
         "operationId": "list_numbers",
+        "parameters": [
+          {
+            "required": false,
+            "schema": { "title": "Page", "type": "integer", "default": 1 },
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": { "title": "Size", "type": "integer", "default": 10 },
+            "name": "size",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "title": "Response List Numbers V1 Numbers List Get",
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/PhoneNumber" }
-                }
+                "schema": { "$ref": "#/components/schemas/PhoneNumberPage" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
               }
             }
           }
@@ -40,7 +58,7 @@
         "security": [{ "HTTPBearer": [] }]
       }
     },
-    "/v1/numbers/": {
+    "/v1/numbers": {
       "get": {
         "tags": ["numbers"],
         "summary": "Get Number",
@@ -173,16 +191,34 @@
         "tags": ["calls"],
         "summary": "List Calls",
         "operationId": "list_calls",
+        "parameters": [
+          {
+            "required": false,
+            "schema": { "title": "Page", "type": "integer", "default": 1 },
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": { "title": "Size", "type": "integer", "default": 10 },
+            "name": "size",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "title": "Response List Calls V1 Calls List Get",
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/Call" }
-                }
+                "schema": { "$ref": "#/components/schemas/CallPage" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
               }
             }
           }
@@ -190,7 +226,7 @@
         "security": [{ "HTTPBearer": [] }]
       }
     },
-    "/v1/calls/": {
+    "/v1/calls": {
       "get": {
         "tags": ["calls"],
         "summary": "Get Call",
@@ -322,7 +358,7 @@
         "security": [{ "HTTPBearer": [] }]
       }
     },
-    "/v1/usage/": {
+    "/v1/usage": {
       "get": {
         "tags": ["usage"],
         "summary": "Get Usage",
@@ -340,7 +376,7 @@
         "security": [{ "HTTPBearer": [] }]
       }
     },
-    "/v1/actions/": {
+    "/v1/actions": {
       "get": {
         "tags": ["actions"],
         "summary": "Get Action",
@@ -359,7 +395,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response Get Action V1 Actions  Get",
+                  "title": "Response Get Action V1 Actions Get",
                   "anyOf": [
                     { "$ref": "#/components/schemas/TransferCallAction" },
                     { "$ref": "#/components/schemas/EndConversationAction" },
@@ -386,22 +422,34 @@
         "tags": ["actions"],
         "summary": "List Actions",
         "operationId": "list_actions",
+        "parameters": [
+          {
+            "required": false,
+            "schema": { "title": "Page", "type": "integer", "default": 1 },
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": { "title": "Size", "type": "integer", "default": 10 },
+            "name": "size",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "title": "Response List Actions V1 Actions List Get",
-                  "type": "array",
-                  "items": {
-                    "anyOf": [
-                      { "$ref": "#/components/schemas/TransferCallAction" },
-                      { "$ref": "#/components/schemas/EndConversationAction" },
-                      { "$ref": "#/components/schemas/DTMFAction" }
-                    ]
-                  }
-                }
+                "schema": { "$ref": "#/components/schemas/ActionPage" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
               }
             }
           }
@@ -420,9 +468,7 @@
               "schema": {
                 "title": "Params",
                 "anyOf": [
-                  {
-                    "$ref": "#/components/schemas/TransferCallActionUpdateParams"
-                  },
+                  { "$ref": "#/components/schemas/TransferCallActionParams" },
                   {
                     "$ref": "#/components/schemas/EndConversationActionParams"
                   },
@@ -521,7 +567,7 @@
         "security": [{ "HTTPBearer": [] }]
       }
     },
-    "/v1/agents/": {
+    "/v1/agents": {
       "get": {
         "tags": ["agents"],
         "summary": "Get Agent",
@@ -560,16 +606,34 @@
         "tags": ["agents"],
         "summary": "List Agents",
         "operationId": "list_agents",
+        "parameters": [
+          {
+            "required": false,
+            "schema": { "title": "Page", "type": "integer", "default": 1 },
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": { "title": "Size", "type": "integer", "default": 10 },
+            "name": "size",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "title": "Response List Agents V1 Agents List Get",
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/Agent" }
-                }
+                "schema": { "$ref": "#/components/schemas/AgentPage" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
               }
             }
           }
@@ -653,7 +717,7 @@
         "security": [{ "HTTPBearer": [] }]
       }
     },
-    "/v1/voices/": {
+    "/v1/voices": {
       "get": {
         "tags": ["voices"],
         "summary": "Get Voice",
@@ -672,11 +736,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response Get Voice V1 Voices  Get",
+                  "title": "Response Get Voice V1 Voices Get",
                   "anyOf": [
                     { "$ref": "#/components/schemas/AzureVoice" },
                     { "$ref": "#/components/schemas/RimeVoice" },
-                    { "$ref": "#/components/schemas/ElevenLabsVoice" }
+                    { "$ref": "#/components/schemas/ElevenLabsVoice" },
+                    { "$ref": "#/components/schemas/PlayHtVoice" }
                   ]
                 }
               }
@@ -699,22 +764,34 @@
         "tags": ["voices"],
         "summary": "List Voices",
         "operationId": "list_voices",
+        "parameters": [
+          {
+            "required": false,
+            "schema": { "title": "Page", "type": "integer", "default": 1 },
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": { "title": "Size", "type": "integer", "default": 10 },
+            "name": "size",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "title": "Response List Voices V1 Voices List Get",
-                  "type": "array",
-                  "items": {
-                    "anyOf": [
-                      { "$ref": "#/components/schemas/AzureVoice" },
-                      { "$ref": "#/components/schemas/RimeVoice" },
-                      { "$ref": "#/components/schemas/ElevenLabsVoice" }
-                    ]
-                  }
-                }
+                "schema": { "$ref": "#/components/schemas/VoicePage" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
               }
             }
           }
@@ -735,7 +812,8 @@
                 "anyOf": [
                   { "$ref": "#/components/schemas/AzureVoiceParams" },
                   { "$ref": "#/components/schemas/RimeVoiceParams" },
-                  { "$ref": "#/components/schemas/ElevenLabsVoiceParams" }
+                  { "$ref": "#/components/schemas/ElevenLabsVoiceParams" },
+                  { "$ref": "#/components/schemas/PlayHtVoiceParams" }
                 ]
               }
             }
@@ -752,7 +830,8 @@
                   "anyOf": [
                     { "$ref": "#/components/schemas/AzureVoice" },
                     { "$ref": "#/components/schemas/RimeVoice" },
-                    { "$ref": "#/components/schemas/ElevenLabsVoice" }
+                    { "$ref": "#/components/schemas/ElevenLabsVoice" },
+                    { "$ref": "#/components/schemas/PlayHtVoice" }
                   ]
                 }
               }
@@ -791,7 +870,10 @@
                 "anyOf": [
                   { "$ref": "#/components/schemas/AzureVoiceUpdateParams" },
                   { "$ref": "#/components/schemas/RimeVoiceUpdateParams" },
-                  { "$ref": "#/components/schemas/ElevenLabsVoiceUpdateParams" }
+                  {
+                    "$ref": "#/components/schemas/ElevenLabsVoiceUpdateParams"
+                  },
+                  { "$ref": "#/components/schemas/PlayHtVoiceUpdateParams" }
                 ]
               }
             }
@@ -808,7 +890,8 @@
                   "anyOf": [
                     { "$ref": "#/components/schemas/AzureVoice" },
                     { "$ref": "#/components/schemas/RimeVoice" },
-                    { "$ref": "#/components/schemas/ElevenLabsVoice" }
+                    { "$ref": "#/components/schemas/ElevenLabsVoice" },
+                    { "$ref": "#/components/schemas/PlayHtVoice" }
                   ]
                 }
               }
@@ -826,7 +909,7 @@
         "security": [{ "HTTPBearer": [] }]
       }
     },
-    "/v1/webhooks/": {
+    "/v1/webhooks": {
       "get": {
         "tags": ["webhooks"],
         "summary": "Get Webhook",
@@ -865,16 +948,34 @@
         "tags": ["webhooks"],
         "summary": "List Webhooks",
         "operationId": "list_webhooks",
+        "parameters": [
+          {
+            "required": false,
+            "schema": { "title": "Page", "type": "integer", "default": 1 },
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": { "title": "Size", "type": "integer", "default": 10 },
+            "name": "size",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "title": "Response List Webhooks V1 Webhooks List Get",
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/Webhook" }
-                }
+                "schema": { "$ref": "#/components/schemas/WebhookPage" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
               }
             }
           }
@@ -961,6 +1062,27 @@
   },
   "components": {
     "schemas": {
+      "ActionPage": {
+        "title": "ActionPage",
+        "required": ["items", "page", "size", "has_more"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                { "$ref": "#/components/schemas/TransferCallAction" },
+                { "$ref": "#/components/schemas/EndConversationAction" },
+                { "$ref": "#/components/schemas/DTMFAction" }
+              ]
+            }
+          },
+          "page": { "title": "Page", "type": "integer" },
+          "size": { "title": "Size", "type": "integer" },
+          "has_more": { "title": "Has More", "type": "boolean" }
+        }
+      },
       "ActionType": {
         "title": "ActionType",
         "enum": [
@@ -979,12 +1101,15 @@
           "id": { "title": "Id", "type": "string", "format": "uuid" },
           "user_id": { "title": "User Id", "type": "string", "format": "uuid" },
           "prompt": { "title": "Prompt", "type": "string" },
+          "language": {
+            "allOf": [{ "$ref": "#/components/schemas/Language" }],
+            "default": "en"
+          },
           "actions": {
             "title": "Actions",
             "type": "array",
             "items": {
               "anyOf": [
-                { "type": "string", "format": "uuid" },
                 { "$ref": "#/components/schemas/TransferCallAction" },
                 { "$ref": "#/components/schemas/EndConversationAction" },
                 { "$ref": "#/components/schemas/DTMFAction" }
@@ -994,20 +1119,36 @@
           "voice": {
             "title": "Voice",
             "anyOf": [
-              { "type": "string", "format": "uuid" },
               { "$ref": "#/components/schemas/AzureVoice" },
               { "$ref": "#/components/schemas/RimeVoice" },
-              { "$ref": "#/components/schemas/ElevenLabsVoice" }
+              { "$ref": "#/components/schemas/ElevenLabsVoice" },
+              { "$ref": "#/components/schemas/PlayHtVoice" }
             ]
           },
           "initial_message": { "title": "Initial Message", "type": "string" },
-          "webhook": {
-            "title": "Webhook",
-            "anyOf": [
-              { "type": "string", "format": "uuid" },
-              { "$ref": "#/components/schemas/Webhook" }
-            ]
+          "webhook": { "$ref": "#/components/schemas/Webhook" },
+          "vector_database": {
+            "$ref": "#/components/schemas/PineconeVectorDatabase"
+          },
+          "interrupt_sensitivity": {
+            "allOf": [{ "$ref": "#/components/schemas/InterruptSensitivity" }],
+            "default": "high"
           }
+        }
+      },
+      "AgentPage": {
+        "title": "AgentPage",
+        "required": ["items", "page", "size", "has_more"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/NormalizedAgent" }
+          },
+          "page": { "title": "Page", "type": "integer" },
+          "size": { "title": "Size", "type": "integer" },
+          "has_more": { "title": "Has More", "type": "boolean" }
         }
       },
       "AgentParams": {
@@ -1016,15 +1157,17 @@
         "type": "object",
         "properties": {
           "prompt": { "title": "Prompt", "type": "string" },
+          "language": {
+            "allOf": [{ "$ref": "#/components/schemas/Language" }],
+            "default": "en"
+          },
           "actions": {
             "title": "Actions",
             "type": "array",
             "items": {
               "anyOf": [
                 { "type": "string", "format": "uuid" },
-                {
-                  "$ref": "#/components/schemas/TransferCallActionUpdateParams"
-                },
+                { "$ref": "#/components/schemas/TransferCallActionParams" },
                 { "$ref": "#/components/schemas/EndConversationActionParams" },
                 { "$ref": "#/components/schemas/DTMFActionParams" }
               ]
@@ -1037,7 +1180,8 @@
               { "type": "string", "format": "uuid" },
               { "$ref": "#/components/schemas/AzureVoiceParams" },
               { "$ref": "#/components/schemas/RimeVoiceParams" },
-              { "$ref": "#/components/schemas/ElevenLabsVoiceParams" }
+              { "$ref": "#/components/schemas/ElevenLabsVoiceParams" },
+              { "$ref": "#/components/schemas/PlayHtVoiceParams" }
             ]
           },
           "initial_message": { "title": "Initial Message", "type": "string" },
@@ -1047,6 +1191,17 @@
               { "type": "string", "format": "uuid" },
               { "$ref": "#/components/schemas/WebhookParams" }
             ]
+          },
+          "vector_database": {
+            "title": "Vector Database",
+            "anyOf": [
+              { "type": "string", "format": "uuid" },
+              { "$ref": "#/components/schemas/PineconeVectorDatabaseParams" }
+            ]
+          },
+          "interrupt_sensitivity": {
+            "allOf": [{ "$ref": "#/components/schemas/InterruptSensitivity" }],
+            "default": "high"
           }
         }
       },
@@ -1058,6 +1213,13 @@
             "title": "Prompt",
             "anyOf": [
               { "type": "string" },
+              { "$ref": "#/components/schemas/Undefined" }
+            ]
+          },
+          "language": {
+            "title": "Language",
+            "anyOf": [
+              { "$ref": "#/components/schemas/Language" },
               { "$ref": "#/components/schemas/Undefined" }
             ]
           },
@@ -1089,6 +1251,7 @@
               { "$ref": "#/components/schemas/AzureVoiceUpdateParams" },
               { "$ref": "#/components/schemas/RimeVoiceUpdateParams" },
               { "$ref": "#/components/schemas/ElevenLabsVoiceUpdateParams" },
+              { "$ref": "#/components/schemas/PlayHtVoiceUpdateParams" },
               { "$ref": "#/components/schemas/Undefined" }
             ]
           },
@@ -1104,6 +1267,23 @@
             "anyOf": [
               { "type": "string", "format": "uuid" },
               { "$ref": "#/components/schemas/WebhookUpdateParams" },
+              { "$ref": "#/components/schemas/Undefined" }
+            ]
+          },
+          "vector_database": {
+            "title": "Vector Database",
+            "anyOf": [
+              { "type": "string", "format": "uuid" },
+              {
+                "$ref": "#/components/schemas/PineconeVectorDatabaseUpdateParams"
+              },
+              { "$ref": "#/components/schemas/Undefined" }
+            ]
+          },
+          "interrupt_sensitivity": {
+            "title": "Interrupt Sensitivity",
+            "anyOf": [
+              { "$ref": "#/components/schemas/InterruptSensitivity" },
               { "$ref": "#/components/schemas/Undefined" }
             ]
           }
@@ -1173,31 +1353,55 @@
           "to_number",
           "from_number",
           "agent",
-          "status"
+          "agent_phone_number"
         ],
         "type": "object",
         "properties": {
           "id": { "title": "Id", "type": "string", "format": "uuid" },
           "user_id": { "title": "User Id", "type": "string", "format": "uuid" },
-          "to_number": { "title": "To Number", "type": "string" },
-          "from_number": { "title": "From Number", "type": "string" },
-          "agent": {
-            "title": "Agent",
-            "anyOf": [
-              { "type": "string", "format": "uuid" },
-              { "$ref": "#/components/schemas/Agent" }
-            ]
+          "status": {
+            "allOf": [{ "$ref": "#/components/schemas/CallStatus" }],
+            "default": "not_started"
           },
-          "goal": { "title": "Goal", "type": "string" },
-          "transcript": { "title": "Transcript", "type": "string" },
-          "recording_url": { "title": "Recording Url", "type": "string" },
-          "status": { "$ref": "#/components/schemas/CallStatus" },
           "error_message": { "title": "Error Message", "type": "string" },
           "recording_available": {
             "title": "Recording Available",
             "type": "boolean",
             "default": false
+          },
+          "transcript": { "title": "Transcript", "type": "string" },
+          "to_number": { "title": "To Number", "type": "string" },
+          "from_number": { "title": "From Number", "type": "string" },
+          "agent": { "$ref": "#/components/schemas/Agent" },
+          "agent_phone_number": {
+            "title": "Agent Phone Number",
+            "type": "string"
+          },
+          "start_time": {
+            "title": "Start Time",
+            "type": "string",
+            "format": "date-time"
+          },
+          "end_time": {
+            "title": "End Time",
+            "type": "string",
+            "format": "date-time"
           }
+        }
+      },
+      "CallPage": {
+        "title": "CallPage",
+        "required": ["items", "page", "size", "has_more"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/NormalizedCall" }
+          },
+          "page": { "title": "Page", "type": "integer" },
+          "size": { "title": "Size", "type": "integer" },
+          "has_more": { "title": "Has More", "type": "boolean" }
         }
       },
       "CallStatus": {
@@ -1206,19 +1410,72 @@
         "type": "string",
         "description": "An enumeration."
       },
+      "CreateCallAgentParams": {
+        "title": "CreateCallAgentParams",
+        "required": ["prompt"],
+        "type": "object",
+        "properties": {
+          "prompt": { "title": "Prompt", "type": "string" },
+          "language": {
+            "allOf": [{ "$ref": "#/components/schemas/Language" }],
+            "default": "en"
+          },
+          "actions": {
+            "title": "Actions",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                { "type": "string", "format": "uuid" },
+                { "$ref": "#/components/schemas/TransferCallActionParams" },
+                { "$ref": "#/components/schemas/EndConversationActionParams" },
+                { "$ref": "#/components/schemas/DTMFActionParams" }
+              ]
+            },
+            "default": []
+          },
+          "voice": {
+            "title": "Voice",
+            "anyOf": [
+              { "type": "string", "format": "uuid" },
+              { "$ref": "#/components/schemas/AzureVoiceParams" },
+              { "$ref": "#/components/schemas/RimeVoiceParams" },
+              { "$ref": "#/components/schemas/ElevenLabsVoiceParams" },
+              { "$ref": "#/components/schemas/PlayHtVoiceParams" }
+            ]
+          },
+          "initial_message": { "title": "Initial Message", "type": "string" },
+          "webhook": {
+            "title": "Webhook",
+            "anyOf": [
+              { "type": "string", "format": "uuid" },
+              { "$ref": "#/components/schemas/WebhookParams" }
+            ]
+          },
+          "vector_database": {
+            "title": "Vector Database",
+            "anyOf": [
+              { "type": "string", "format": "uuid" },
+              { "$ref": "#/components/schemas/PineconeVectorDatabaseParams" }
+            ]
+          },
+          "interrupt_sensitivity": {
+            "allOf": [{ "$ref": "#/components/schemas/InterruptSensitivity" }],
+            "default": "high"
+          }
+        }
+      },
       "CreateCallRequest": {
         "title": "CreateCallRequest",
-        "required": ["from_number", "to_number", "goal", "agent"],
+        "required": ["from_number", "to_number", "agent"],
         "type": "object",
         "properties": {
           "from_number": { "title": "From Number", "type": "string" },
           "to_number": { "title": "To Number", "type": "string" },
-          "goal": { "title": "Goal", "type": "string" },
           "agent": {
             "title": "Agent",
             "anyOf": [
               { "type": "string", "format": "uuid" },
-              { "$ref": "#/components/schemas/AgentParams" }
+              { "$ref": "#/components/schemas/CreateCallAgentParams" }
             ]
           }
         }
@@ -1399,20 +1656,192 @@
           }
         }
       },
-      "PhoneNumber": {
-        "title": "PhoneNumber",
-        "required": ["id", "user_id", "number", "active", "inbound_agent"],
+      "InterruptSensitivity": {
+        "title": "InterruptSensitivity",
+        "enum": ["low", "high"],
+        "type": "string",
+        "description": "An enumeration."
+      },
+      "Language": {
+        "title": "Language",
+        "enum": ["en", "es", "de"],
+        "type": "string",
+        "description": "An enumeration."
+      },
+      "NormalizedAgent": {
+        "title": "NormalizedAgent",
+        "required": ["id", "user_id", "prompt", "actions", "voice"],
         "type": "object",
         "properties": {
           "id": { "title": "Id", "type": "string", "format": "uuid" },
           "user_id": { "title": "User Id", "type": "string", "format": "uuid" },
-          "number": { "title": "Number", "type": "string" },
-          "active": { "title": "Active", "type": "boolean" },
-          "inbound_agent": {
-            "title": "Inbound Agent",
+          "prompt": { "title": "Prompt", "type": "string" },
+          "language": {
+            "allOf": [{ "$ref": "#/components/schemas/Language" }],
+            "default": "en"
+          },
+          "actions": {
+            "title": "Actions",
+            "type": "array",
+            "items": { "type": "string", "format": "uuid" }
+          },
+          "voice": { "title": "Voice", "type": "string", "format": "uuid" },
+          "initial_message": { "title": "Initial Message", "type": "string" },
+          "webhook": { "title": "Webhook", "type": "string", "format": "uuid" },
+          "vector_database": {
+            "title": "Vector Database",
             "anyOf": [
               { "type": "string", "format": "uuid" },
-              { "$ref": "#/components/schemas/Agent" }
+              { "$ref": "#/components/schemas/PineconeVectorDatabaseParams" }
+            ]
+          },
+          "interrupt_sensitivity": {
+            "allOf": [{ "$ref": "#/components/schemas/InterruptSensitivity" }],
+            "default": "high"
+          }
+        }
+      },
+      "NormalizedCall": {
+        "title": "NormalizedCall",
+        "required": [
+          "id",
+          "user_id",
+          "to_number",
+          "from_number",
+          "agent",
+          "agent_phone_number"
+        ],
+        "type": "object",
+        "properties": {
+          "id": { "title": "Id", "type": "string", "format": "uuid" },
+          "user_id": { "title": "User Id", "type": "string", "format": "uuid" },
+          "status": {
+            "allOf": [{ "$ref": "#/components/schemas/CallStatus" }],
+            "default": "not_started"
+          },
+          "error_message": { "title": "Error Message", "type": "string" },
+          "recording_available": {
+            "title": "Recording Available",
+            "type": "boolean",
+            "default": false
+          },
+          "transcript": { "title": "Transcript", "type": "string" },
+          "to_number": { "title": "To Number", "type": "string" },
+          "from_number": { "title": "From Number", "type": "string" },
+          "agent": { "title": "Agent", "type": "string", "format": "uuid" },
+          "agent_phone_number": {
+            "title": "Agent Phone Number",
+            "type": "string"
+          },
+          "start_time": {
+            "title": "Start Time",
+            "type": "string",
+            "format": "date-time"
+          },
+          "end_time": {
+            "title": "End Time",
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "NormalizedPhoneNumber": {
+        "title": "NormalizedPhoneNumber",
+        "required": ["id", "user_id", "inbound_agent", "number"],
+        "type": "object",
+        "properties": {
+          "id": { "title": "Id", "type": "string", "format": "uuid" },
+          "user_id": { "title": "User Id", "type": "string", "format": "uuid" },
+          "active": { "title": "Active", "type": "boolean", "default": true },
+          "label": { "title": "Label", "type": "string", "default": "" },
+          "inbound_agent": {
+            "title": "Inbound Agent",
+            "type": "string",
+            "format": "uuid"
+          },
+          "number": { "title": "Number", "type": "string" }
+        }
+      },
+      "PhoneNumber": {
+        "title": "PhoneNumber",
+        "required": ["id", "user_id", "inbound_agent", "number"],
+        "type": "object",
+        "properties": {
+          "id": { "title": "Id", "type": "string", "format": "uuid" },
+          "user_id": { "title": "User Id", "type": "string", "format": "uuid" },
+          "active": { "title": "Active", "type": "boolean", "default": true },
+          "label": { "title": "Label", "type": "string", "default": "" },
+          "inbound_agent": { "$ref": "#/components/schemas/Agent" },
+          "number": { "title": "Number", "type": "string" }
+        }
+      },
+      "PhoneNumberPage": {
+        "title": "PhoneNumberPage",
+        "required": ["items", "page", "size", "has_more"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/NormalizedPhoneNumber" }
+          },
+          "page": { "title": "Page", "type": "integer" },
+          "size": { "title": "Size", "type": "integer" },
+          "has_more": { "title": "Has More", "type": "boolean" }
+        }
+      },
+      "PineconeVectorDatabase": {
+        "title": "PineconeVectorDatabase",
+        "required": ["id", "user_id", "index", "api_key", "api_environment"],
+        "type": "object",
+        "properties": {
+          "id": { "title": "Id", "type": "string", "format": "uuid" },
+          "user_id": { "title": "User Id", "type": "string", "format": "uuid" },
+          "type": {
+            "allOf": [{ "$ref": "#/components/schemas/VectorDatabaseType" }],
+            "default": "vector_database_pinecone"
+          },
+          "index": { "title": "Index", "type": "string" },
+          "api_key": { "title": "Api Key", "type": "string" },
+          "api_environment": { "title": "Api Environment", "type": "string" }
+        }
+      },
+      "PineconeVectorDatabaseParams": {
+        "title": "PineconeVectorDatabaseParams",
+        "required": ["type", "index", "api_key", "api_environment"],
+        "type": "object",
+        "properties": {
+          "type": { "$ref": "#/components/schemas/VectorDatabaseType" },
+          "index": { "title": "Index", "type": "string" },
+          "api_key": { "title": "Api Key", "type": "string" },
+          "api_environment": { "title": "Api Environment", "type": "string" }
+        }
+      },
+      "PineconeVectorDatabaseUpdateParams": {
+        "title": "PineconeVectorDatabaseUpdateParams",
+        "required": ["type"],
+        "type": "object",
+        "properties": {
+          "type": { "$ref": "#/components/schemas/VectorDatabaseType" },
+          "index": {
+            "title": "Index",
+            "anyOf": [
+              { "type": "string" },
+              { "$ref": "#/components/schemas/Undefined" }
+            ]
+          },
+          "api_key": {
+            "title": "Api Key",
+            "anyOf": [
+              { "type": "string" },
+              { "$ref": "#/components/schemas/Undefined" }
+            ]
+          },
+          "api_environment": {
+            "title": "Api Environment",
+            "anyOf": [
+              { "type": "string" },
+              { "$ref": "#/components/schemas/Undefined" }
             ]
           }
         }
@@ -1422,6 +1851,62 @@
         "enum": ["free", "developer", "enterprise"],
         "type": "string",
         "description": "An enumeration."
+      },
+      "PlayHtVoice": {
+        "title": "PlayHtVoice",
+        "required": ["id", "user_id", "voice_id", "api_user_id", "api_key"],
+        "type": "object",
+        "properties": {
+          "id": { "title": "Id", "type": "string", "format": "uuid" },
+          "user_id": { "title": "User Id", "type": "string", "format": "uuid" },
+          "type": {
+            "allOf": [{ "$ref": "#/components/schemas/VoiceType" }],
+            "default": "voice_play_ht"
+          },
+          "voice_id": { "title": "Voice Id", "type": "string" },
+          "api_user_id": { "title": "Api User Id", "type": "string" },
+          "api_key": { "title": "Api Key", "type": "string" }
+        }
+      },
+      "PlayHtVoiceParams": {
+        "title": "PlayHtVoiceParams",
+        "required": ["type", "voice_id", "api_user_id", "api_key"],
+        "type": "object",
+        "properties": {
+          "type": { "$ref": "#/components/schemas/VoiceType" },
+          "voice_id": { "title": "Voice Id", "type": "string" },
+          "api_user_id": { "title": "Api User Id", "type": "string" },
+          "api_key": { "title": "Api Key", "type": "string" }
+        }
+      },
+      "PlayHtVoiceUpdateParams": {
+        "title": "PlayHtVoiceUpdateParams",
+        "required": ["type"],
+        "type": "object",
+        "properties": {
+          "type": { "$ref": "#/components/schemas/VoiceType" },
+          "voice_id": {
+            "title": "Voice Id",
+            "anyOf": [
+              { "type": "string" },
+              { "$ref": "#/components/schemas/Undefined" }
+            ]
+          },
+          "api_user_id": {
+            "title": "Api User Id",
+            "anyOf": [
+              { "type": "string" },
+              { "$ref": "#/components/schemas/Undefined" }
+            ]
+          },
+          "api_key": {
+            "title": "Api Key",
+            "anyOf": [
+              { "type": "string" },
+              { "$ref": "#/components/schemas/Undefined" }
+            ]
+          }
+        }
       },
       "RimeVoice": {
         "title": "RimeVoice",
@@ -1475,6 +1960,15 @@
           "config": { "$ref": "#/components/schemas/TransferCallConfig" }
         }
       },
+      "TransferCallActionParams": {
+        "title": "TransferCallActionParams",
+        "required": ["type", "config"],
+        "type": "object",
+        "properties": {
+          "type": { "$ref": "#/components/schemas/ActionType" },
+          "config": { "$ref": "#/components/schemas/TransferCallConfig" }
+        }
+      },
       "TransferCallActionUpdateParams": {
         "title": "TransferCallActionUpdateParams",
         "required": ["type"],
@@ -1501,14 +1995,21 @@
       "Undefined": { "title": "Undefined", "type": "object", "properties": {} },
       "UpdateNumberRequest": {
         "title": "UpdateNumberRequest",
-        "required": ["inbound_agent"],
         "type": "object",
         "properties": {
+          "label": {
+            "title": "Label",
+            "anyOf": [
+              { "type": "string" },
+              { "$ref": "#/components/schemas/Undefined" }
+            ]
+          },
           "inbound_agent": {
             "title": "Inbound Agent",
             "anyOf": [
               { "type": "string", "format": "uuid" },
-              { "$ref": "#/components/schemas/AgentUpdateParams" }
+              { "$ref": "#/components/schemas/AgentUpdateParams" },
+              { "$ref": "#/components/schemas/Undefined" }
             ]
           }
         }
@@ -1549,13 +2050,41 @@
           "type": { "title": "Error Type", "type": "string" }
         }
       },
+      "VectorDatabaseType": {
+        "title": "VectorDatabaseType",
+        "enum": ["vector_database_pinecone"],
+        "type": "string",
+        "description": "An enumeration."
+      },
+      "VoicePage": {
+        "title": "VoicePage",
+        "required": ["items", "page", "size", "has_more"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                { "$ref": "#/components/schemas/AzureVoice" },
+                { "$ref": "#/components/schemas/RimeVoice" },
+                { "$ref": "#/components/schemas/ElevenLabsVoice" },
+                { "$ref": "#/components/schemas/PlayHtVoice" }
+              ]
+            }
+          },
+          "page": { "title": "Page", "type": "integer" },
+          "size": { "title": "Size", "type": "integer" },
+          "has_more": { "title": "Has More", "type": "boolean" }
+        }
+      },
       "VoiceType": {
         "title": "VoiceType",
         "enum": [
-          "voice_base",
           "voice_azure",
           "voice_rime",
-          "voice_eleven_labs"
+          "voice_eleven_labs",
+          "voice_play_ht"
         ],
         "type": "string",
         "description": "An enumeration."
@@ -1576,6 +2105,21 @@
             "allOf": [{ "$ref": "#/components/schemas/HTTPMethod" }],
             "default": "POST"
           }
+        }
+      },
+      "WebhookPage": {
+        "title": "WebhookPage",
+        "required": ["items", "page", "size", "has_more"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Webhook" }
+          },
+          "page": { "title": "Page", "type": "integer" },
+          "size": { "title": "Size", "type": "integer" },
+          "has_more": { "title": "Has More", "type": "boolean" }
         }
       },
       "WebhookParams": {
